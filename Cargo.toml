@@ -4,6 +4,7 @@ members = [
     "crates/codegen",
     "crates/lsp",
     "crates/cli",
+    "crates/ir"
 ]
 
 [workspace.dependencies]
