@@ -6,7 +6,8 @@ pub use ast::{Program, ProgramId, ProgramSource};
 pub use {db::Database, parse::parse_program};
 use lalrpop_util::lalrpop_mod;
 
-lalrpop_mod!(pub grammar); // synthesized by LALRPOP
+// generate LALRPOP grammar module.
+lalrpop_mod!(pub grammar);
 
 
 /// The Jar combines all the features provided by the salsa database.
@@ -21,6 +22,10 @@ pub struct Jar(
 
 );
 
-// This is some required salsa boilerplate.
+// TODO: Document this trait.
 pub trait ParserDatabase: salsa::DbWithJar<Jar> {}
+
+// blanket implementation for every type that implements DbWithJar<Jar>.
+// This will allow the db::Database to implement ParserDatabase without a
+// concrete implemetation.
 impl<DB> ParserDatabase for DB where DB: ?Sized + salsa::DbWithJar<Jar> {}

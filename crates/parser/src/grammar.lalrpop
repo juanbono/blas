@@ -6,10 +6,5 @@ pub Program: crate::Program = {
     "program " <id:ProgramID> "end" => crate::Program::new(db, id),
 };
 
-pub Term: i32 = {
-    <n:Num> => n,
-    "(" <t:Term> ")" => t,
-};
-
 Num: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
 ProgramID: crate::ProgramId = <s:r"[[:alpha:]][\d\w\-_]*\??"> => crate::ProgramId::new(db, s.to_string());
