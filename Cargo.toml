@@ -1,13 +1,17 @@
 [workspace]
+resolver = "2"
+
 members = [
     "crates/parser",
     "crates/codegen",
     "crates/lsp",
     "crates/cli",
-    "crates/ir"
+    "crates/core"
 ]
 
 [workspace.dependencies]
 thiserror = "1.0"
 log = "0.4.0"
 env_logger = "0.10.0"
+salsa = { git = "https://github.com/salsa-rs/salsa.git", package = "salsa-2022" }
+derive-new = "0.5.9"
