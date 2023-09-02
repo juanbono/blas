@@ -1,9 +1,13 @@
-
-// use core::{Database, ProgramSource};
+use core::RootDatabase;
 
 fn main() {
-    println!("Hola mundo");
-    // let db = Database::default();
-    // let source = ProgramSource::new(&db, String::from("program HolaMundo;"));
-    // core::compile_program(&db, source);
+    let db = RootDatabase::default();
+    let program = r#"
+    program HolaMundo 
+    end"#
+        .to_string();
+
+    let compiled_program = db.compile_string(program).unwrap();
+    dbg!(compiled_program);
+    dbg!(compiled_program.program_id(&db).text(&db));
 }

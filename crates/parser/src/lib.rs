@@ -3,12 +3,11 @@ mod db;
 mod parse;
 
 pub use ast::{Program, ProgramId, ProgramSource};
-pub use {db::Database, parse::parse_program};
 use lalrpop_util::lalrpop_mod;
+pub use {db::Database, parse::parse_program};
 
 // generate LALRPOP grammar module.
 lalrpop_mod!(pub grammar);
-
 
 /// The Jar combines all the features provided by the salsa database.
 /// Every tracked function, interned value, query and input must be listed here.
@@ -19,7 +18,6 @@ pub struct Jar(
     crate::ast::ProgramId,
     crate::ast::FunctionId,
     crate::ast::Program,
-
 );
 
 // TODO: Document this trait.
