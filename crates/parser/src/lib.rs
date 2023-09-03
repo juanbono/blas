@@ -2,7 +2,9 @@ mod ast;
 mod db;
 mod parse;
 
-pub use ast::{Program, ProgramId, ProgramSource};
+pub use ast::{
+    Expression, ExpressionData, Program, ProgramId, ProgramSource, Statement, StatementData,
+};
 use lalrpop_util::lalrpop_mod;
 pub use {db::Database, parse::parse_program};
 

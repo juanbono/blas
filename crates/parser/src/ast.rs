@@ -25,9 +25,36 @@ pub struct Program {
     #[return_ref]
     pub program_id: ProgramId,
     // TODO: implement statements
-    // #[return_ref]
-    // pub statements: Vec<Statement>,
+    #[return_ref]
+    pub statements: Vec<Statement>,
 }
 
 #[derive(Eq, PartialEq, Debug, Hash, new)]
-pub struct Statement;
+pub struct Statement {
+    data: StatementData,
+}
+
+#[derive(Eq, PartialEq, Debug, Hash)]
+pub enum StatementData {
+    /// Defines `fn <name>(<args>) = <body>`
+    // Function(Function),
+    /// Defines `print <expr>`
+    // Print(Expression),
+
+    /// Returns an expression
+    Return(Expression),
+}
+
+#[derive(Eq, PartialEq, Debug, Hash, new)]
+pub struct Expression {
+    // pub span: Span,
+    pub data: ExpressionData,
+}
+
+#[derive(Eq, PartialEq, Debug, Hash)]
+pub enum ExpressionData {
+    // Op(Box<Expression>, Op, Box<Expression>),
+    Number(u64),
+    // Variable(VariableId),
+    // Call(FunctionId, Vec<Expression>),
+}

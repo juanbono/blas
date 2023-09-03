@@ -25,5 +25,6 @@ fn main() {
     let compiled_program = db.compile_string(program).unwrap();
 
     dbg!(compiled_program);
+    dbg!(compiled_program.statements(&db));
     dbg!(compiled_program.program_id(&db).text(&db));
 }
