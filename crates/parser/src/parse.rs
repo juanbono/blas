@@ -1,8 +1,8 @@
-use crate::{grammar, Program, ProgramSource};
+use crate::{grammar, Program, ProgramSource, ParseError};
 
 #[salsa::tracked]
-pub fn parse_program(db: &dyn crate::ParserDatabase, source: ProgramSource) -> Result<Program, ()> {
+pub fn parse_program(db: &dyn crate::ParserDatabase, source: ProgramSource) -> Result<Program, ParseError> {
     grammar::ProgramParser::new()
         .parse(db, source.text(db))
-        .map_err(|_| ())
+        .map_err(|_| ParseError)
 }

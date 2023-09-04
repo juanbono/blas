@@ -1,3 +1,5 @@
+use parser::ParseError;
+
 #[derive(Default)]
 #[salsa::db(crate::Jar, parser::Jar)]
 pub struct RootDatabase {
@@ -5,7 +7,7 @@ pub struct RootDatabase {
 }
 
 impl RootDatabase {
-    pub fn compile_string(&self, source: String) -> Result<parser::Program, ()> {
+    pub fn compile_string(&self, source: String) -> Result<parser::Program, ParseError> {
         let source = parser::ProgramSource::new(self, source);
         crate::compile::compile_program(self, source)
     }
