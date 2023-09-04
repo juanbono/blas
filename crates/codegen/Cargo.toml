@@ -6,5 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cranelift = "0.98.1"
+cranelift = "0.99.0"
+cranelift-object = "0.99.0"
+libc = "0.2.147"
+memmap2 = "0.7.1"
+target-lexicon = "0.12.11"
 thiserror = { workspace = true }
