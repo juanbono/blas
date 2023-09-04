@@ -21,7 +21,7 @@ impl<T: ?Sized> UpcastMut<T> for T {
 
 #[cfg(test)]
 mod tests {
-    use crate::Upcast;
+    // use crate::Upcast;
 
     trait Reader {}
     trait Writer: Reader {}

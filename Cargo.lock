@@ -272,6 +272,7 @@ name = "codegen"
 version = "0.1.0"
 dependencies = [
  "cranelift",
+ "cranelift-native",
  "cranelift-object",
  "libc",
  "memmap2",
@@ -393,6 +394,17 @@ dependencies = [
  "anyhow",
  "cranelift-codegen",
  "cranelift-control",
+]
+
+[[package]]
+name = "cranelift-native"
+version = "0.99.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "543f52ef487498253ebe5df321373c5c314da74ada0e92f13451b6f887194f87"
+dependencies = [
+ "cranelift-codegen",
+ "libc",
+ "target-lexicon",
 ]
 
 [[package]]
