@@ -1,4 +1,4 @@
-use cranelift::prelude::*;
+use cranelift::prelude::{types::I64, *};
 
 fn main() {
     // create a settings builder to configure the opt level
@@ -17,7 +17,7 @@ fn main() {
 
     // to create a function first we need to create its signature
     let mut signature = Signature::new(isa::CallConv::SystemV);
-    signature.params.push(AbiParam::new(pointer_type));
+
     // add the return type
     signature.returns.push(AbiParam::new(types::I64));
 
@@ -39,7 +39,8 @@ fn main() {
     function_builder.switch_to_block(block);
 
     // insert the "return 2" instruction
-    function_builder.ins().return_(&[Value::from_u32(2)]);
+    let return_value = function_builder.ins().iconst(I64, 2);
+    function_builder.ins().return_(&[return_value]);
 
     // finalize the code generation of the function
     function_builder.finalize();
@@ -67,4 +68,6 @@ fn main() {
     // println!("dissasembled code: \n{}", code.disasm.as_ref().unwrap());
     let code = code.code_buffer().to_vec();
     println!("Compiled function \n{}", ctx.func.display());
+
+    // TODO: generate binary
 }
