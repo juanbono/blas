@@ -272,6 +272,7 @@ name = "codegen"
 version = "0.1.0"
 dependencies = [
  "cranelift",
+ "cranelift-module",
  "cranelift-native",
  "cranelift-object",
  "libc",

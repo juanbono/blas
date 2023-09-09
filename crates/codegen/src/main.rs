@@ -1,10 +1,13 @@
-use cranelift::prelude::{types::I64, *};
+use cranelift::prelude::*;
+use cranelift_module::{Linkage, Module};
+use cranelift_object::{ObjectBuilder, ObjectModule};
 
 fn main() {
     // create a settings builder to configure the opt level
     let mut settings_builder = settings::builder();
     // disable optimizations
-    settings_builder.set("opt_level", "none").unwrap(); // TODO: take the opt level in the CLI.
+    // TODO: take the opt level in the CLI.
+    settings_builder.set("opt_level", "none").unwrap();
 
     let flags = settings::Flags::new(settings_builder);
 
@@ -12,14 +15,21 @@ fn main() {
     let isa_builder = cranelift_native::builder().unwrap();
     let isa = isa_builder.finish(flags).unwrap();
 
-    // get the pointer_type from the ISA
-    let pointer_type = isa.pointer_type();
-
     // to create a function first we need to create its signature
     let mut signature = Signature::new(isa::CallConv::SystemV);
 
     // add the return type
     signature.returns.push(AbiParam::new(types::I64));
+
+    // Now we need to define a module, but first we need an object builder
+    let object_builder =
+        ObjectBuilder::new(isa, "main", cranelift_module::default_libcall_names()).unwrap();
+    let mut module = ObjectModule::new(object_builder);
+
+    // declare the function into the module
+    let function_id = module
+        .declare_function("main", Linkage::Export, &signature)
+        .unwrap();
 
     // now we can create our function
     let mut function = codegen::ir::Function::with_name_signature(
@@ -39,35 +49,22 @@ fn main() {
     function_builder.switch_to_block(block);
 
     // insert the "return 2" instruction
-    let return_value = function_builder.ins().iconst(I64, 2);
+    let return_value = function_builder.ins().iconst(types::I64, 42);
     function_builder.ins().return_(&[return_value]);
 
     // finalize the code generation of the function
     function_builder.finalize();
-
-    // verify that the generated function is well formed.
-    codegen::verify_function(&function, &*isa).unwrap();
 
     // create a codegen context for the function.
     // This context is the one that translate the cranelift IR to
     // assembly code for our architecture.
     let mut ctx = codegen::Context::for_function(function);
 
-    let mut ctrl_plane = codegen::control::ControlPlane::default();
-    ctx.set_disasm(true);
+    module.define_function(function_id, &mut ctx).unwrap();
 
-    // compile to assembly code.
-    let code = match ctx.compile(&*isa, &mut ctrl_plane) {
-        Ok(x) => x,
-        Err(err) => {
-            eprintln!("error compiling: {:?}", err);
-            std::process::exit(8);
-        }
-    };
-
-    // println!("dissasembled code: \n{}", code.disasm.as_ref().unwrap());
-    let code = code.code_buffer().to_vec();
-    println!("Compiled function \n{}", ctx.func.display());
-
-    // TODO: generate binary
+    // now that all is in place we can finish the module
+    let object_product = module.finish();
+    // and emit the code to a file
+    let bytes = object_product.emit().unwrap();
+    std::fs::write("main.o", bytes).unwrap();
 }
