@@ -1,3 +1,5 @@
+use std::{path::Path, process::Command};
+
 use cranelift::prelude::*;
 use cranelift_module::{Linkage, Module};
 use cranelift_object::{ObjectBuilder, ObjectModule};
@@ -66,5 +68,15 @@ fn main() {
     let object_product = module.finish();
     // and emit the code to a file
     let bytes = object_product.emit().unwrap();
+
     std::fs::write("main.o", bytes).unwrap();
+
+    link(Path::new("main.o"), Path::new("main"));
+}
+
+fn link(obj_file: &Path, output: &Path) {
+    Command::new("cc")
+        .args(&[&obj_file, Path::new("-o"), output])
+        .status()
+        .unwrap();
 }
