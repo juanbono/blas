@@ -2,7 +2,7 @@ use parser::ParseError;
 use salsa::DbWithJar;
 
 #[salsa::tracked]
-pub fn compile_program(
+pub fn parse_program(
     db: &dyn crate::CompilerDatabase,
     source: parser::ProgramSource,
 ) -> Result<parser::Program, ParseError> {

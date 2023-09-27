@@ -9,6 +9,9 @@ struct Args {
     /// Name of file to compile
     #[arg(short, long)]
     file: String,
+    /// Output file
+    #[arg(short, long)]
+    output: String
 }
 
 fn main() {

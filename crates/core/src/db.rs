@@ -9,7 +9,8 @@ pub struct RootDatabase {
 impl RootDatabase {
     pub fn compile_string(&self, source: String) -> Result<parser::Program, ParseError> {
         let source = parser::ProgramSource::new(self, source);
-        crate::compile::compile_program(self, source)
+        crate::compile::parse_program(self, source)
+        // TODO: Call to code generation function here
     }
 }
 

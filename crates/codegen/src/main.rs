@@ -1,21 +1,12 @@
 use std::{path::Path, process::Command};
 
+use ::codegen::CodeGenerator;
 use cranelift::prelude::*;
 use cranelift_module::{Linkage, Module};
 use cranelift_object::{ObjectBuilder, ObjectModule};
 
 fn main() {
-    // create a settings builder to configure the opt level
-    let mut settings_builder = settings::builder();
-    // disable optimizations
-    // TODO: take the opt level in the CLI.
-    settings_builder.set("opt_level", "none").unwrap();
-
-    let flags = settings::Flags::new(settings_builder);
-
-    // create the ISA builder using the native configuration.
-    let isa_builder = cranelift_native::builder().unwrap();
-    let isa = isa_builder.finish(flags).unwrap();
+    let mut code_generator = CodeGenerator::new();
 
     // to create a function first we need to create its signature
     let mut signature = Signature::new(isa::CallConv::SystemV);
@@ -23,13 +14,8 @@ fn main() {
     // add the return type
     signature.returns.push(AbiParam::new(types::I64));
 
-    // Now we need to define a module, but first we need an object builder
-    let object_builder =
-        ObjectBuilder::new(isa, "main", cranelift_module::default_libcall_names()).unwrap();
-    let mut module = ObjectModule::new(object_builder);
-
     // declare the function into the module
-    let function_id = module
+    let function_id = code_generator.module
         .declare_function("main", Linkage::Export, &signature)
         .unwrap();
 
@@ -62,10 +48,10 @@ fn main() {
     // assembly code for our architecture.
     let mut ctx = codegen::Context::for_function(function);
 
-    module.define_function(function_id, &mut ctx).unwrap();
+    code_generator.module.define_function(function_id, &mut ctx).unwrap();
 
     // now that all is in place we can finish the module
-    let object_product = module.finish();
+    let object_product = code_generator.module.finish();
     // and emit the code to a file
     let bytes = object_product.emit().unwrap();
 

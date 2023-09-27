@@ -6,7 +6,7 @@ pub use db::RootDatabase;
 /// The Jar combines all the features provided by the salsa database.
 /// Every tracked function, interned value, query and input must be listed here.
 #[salsa::jar(db = CompilerDatabase)]
-pub struct Jar(crate::compile::compile_program);
+pub struct Jar(crate::compile::parse_program);
 
 // TODO: Document this trait.
 pub trait CompilerDatabase: salsa::DbWithJar<Jar> + salsa::DbWithJar<parser::Jar> {}
