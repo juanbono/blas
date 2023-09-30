@@ -14,3 +14,5 @@ memmap2 = "0.7.1"
 target-lexicon = "0.12.11"
 thiserror = { workspace = true }
 cranelift-module = "0.99.1"
+# consider moving the ast to another crate so we don't depend on the parser
+parser = { path = "../parser" }

@@ -264,6 +264,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "codegen",
  "core",
 ]
 
@@ -277,6 +278,7 @@ dependencies = [
  "cranelift-object",
  "libc",
  "memmap2",
+ "parser",
  "target-lexicon",
  "thiserror",
 ]

@@ -1,3 +1,5 @@
+use std::{path::Path, process::Command};
+
 use cranelift::prelude::*;
 use cranelift_module::{Linkage, Module};
 use cranelift_object::{ObjectBuilder, ObjectModule};
@@ -28,7 +30,7 @@ impl CodeGenerator {
         Self { module }
     }
 
-    pub fn generate_main(&mut self) {
+    pub fn generate_main(&mut self, statements: &Vec<parser::Statement>) {
         // to create a function first we need to create its signature
         let mut signature = Signature::new(isa::CallConv::SystemV);
 
@@ -58,9 +60,10 @@ impl CodeGenerator {
         function_builder.append_block_params_for_function_params(block);
         function_builder.switch_to_block(block);
 
-        // insert the "return 2" instruction
-        let return_value = function_builder.ins().iconst(types::I64, 42);
-        function_builder.ins().return_(&[return_value]);
+        // generate code for each statement
+        for stmt in statements {
+            self.generate_stmt(&mut function_builder, stmt)
+        }
 
         // finalize the code generation of the function
         function_builder.finalize();
@@ -73,10 +76,35 @@ impl CodeGenerator {
         self.module.define_function(function_id, &mut ctx).unwrap();
     }
 
-    pub fn emit(self) -> Vec<u8>{
+    pub fn emit(self) -> Vec<u8> {
         // now that all is in place we can finish the module
         let object_product = self.module.finish();
         // and emit the code to a file
         object_product.emit().unwrap()
     }
+
+    fn generate_stmt(&mut self, fn_builder: &mut FunctionBuilder, stmt: &parser::Statement) {
+        match &stmt.data {
+            parser::StatementData::Return(expr) => {
+                self.generate_expr(fn_builder, expr);
+            }
+        }
+    }
+
+    fn generate_expr(&self, fn_builder: &mut FunctionBuilder, expr: &parser::Expression) {
+        match expr.data {
+            parser::ExpressionData::Number(n) => {
+                // insert the "return n" instruction
+                let return_value = fn_builder.ins().iconst(types::I64, n as i64);
+                fn_builder.ins().return_(&[return_value]);
+            }
+        }
+    }
+}
+
+pub fn link(obj_file: &Path, output: &Path) {
+    Command::new("cc")
+        .args(&[&obj_file, Path::new("-o"), output])
+        .status()
+        .unwrap();
 }

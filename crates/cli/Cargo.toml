@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 core = { path = "../core" }
+codegen = { path = "../codegen" }
 clap = { version = "4.3.19", features = ["derive"] }
 anyhow = { version = "1.0" }

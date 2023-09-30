@@ -11,7 +11,7 @@ struct Args {
     file: String,
     /// Output file
     #[arg(short, long)]
-    output: String
+    output: String,
 }
 
 fn main() {
@@ -25,9 +25,5 @@ fn main() {
     let db = RootDatabase::default();
 
     // compile the program
-    let compiled_program = db.compile_string(program).unwrap();
-
-    dbg!(compiled_program);
-    dbg!(compiled_program.statements(&db));
-    dbg!(compiled_program.program_id(&db).text(&db));
+    db.compile_string(program).unwrap();
 }

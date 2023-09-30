@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use parser::ParseError;
 
 #[derive(Default)]
@@ -7,10 +9,21 @@ pub struct RootDatabase {
 }
 
 impl RootDatabase {
-    pub fn compile_string(&self, source: String) -> Result<parser::Program, ParseError> {
+    pub fn compile_string(&self, source: String) -> Result<(), ParseError> {
         let source = parser::ProgramSource::new(self, source);
-        crate::compile::parse_program(self, source)
-        // TODO: Call to code generation function here
+        let parsed_program = crate::compile::parse_program(self, source)?;
+
+        let mut code_generator = codegen::CodeGenerator::new();
+
+        code_generator.generate_main(parsed_program.statements(self));
+
+        let code = code_generator.emit();
+
+        std::fs::write("main.o", code).unwrap();
+
+        codegen::link(Path::new("main.o"), Path::new("main"));
+
+        Ok(())
     }
 }
 

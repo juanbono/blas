@@ -31,7 +31,7 @@ pub struct Program {
 
 #[derive(Eq, PartialEq, Debug, Hash, new)]
 pub struct Statement {
-    data: StatementData,
+    pub data: StatementData,
 }
 
 #[derive(Eq, PartialEq, Debug, Hash)]
