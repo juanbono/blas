@@ -24,7 +24,7 @@ pub struct FunctionId {
 pub struct Program {
     #[return_ref]
     pub program_id: ProgramId,
-    // TODO: implement statements
+
     #[return_ref]
     pub statements: Vec<Statement>,
 }
@@ -38,8 +38,8 @@ pub struct Statement {
 pub enum StatementData {
     /// Defines `fn <name>(<args>) = <body>`
     // Function(Function),
-    /// Defines `print <expr>`
-    // Print(Expression),
+    /// Defines `writeln(<expr>)`
+    // WriteLn(Expression),
 
     /// Returns an expression
     Return(Expression),
