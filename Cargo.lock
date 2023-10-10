@@ -297,6 +297,7 @@ dependencies = [
  "derive-new",
  "parser",
  "salsa-2022",
+ "thiserror",
  "utils",
 ]
 

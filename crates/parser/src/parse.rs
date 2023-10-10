@@ -7,5 +7,5 @@ pub fn parse_program(
 ) -> Result<Program, ParseError> {
     grammar::ProgramParser::new()
         .parse(db, source.text(db))
-        .map_err(|_| ParseError)
+        .map_err(|err| ParseError(err.to_string()))
 }

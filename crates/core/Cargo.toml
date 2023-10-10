@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 salsa = { workspace = true }
+thiserror = { workspace = true }
 parser = { path = "../parser" }
 codegen = { path = "../codegen" }
 utils = { path = "../utils" }

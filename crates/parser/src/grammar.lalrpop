@@ -7,11 +7,19 @@ pub Program: crate::Program = {
 };
 
 pub BeginBlock: Vec<crate::Statement> = {
+    // parse empty string
+    => vec![],
+    // parse a series of statements
     "begin" <statements: Statement*> "end" => statements,
 };
 
 pub Statement: crate::Statement = {
-    "return " <number: Num> ";" => crate::Statement::new(crate::StatementData::Return(crate::Expression::new(crate::ExpressionData::Number(number)))),
+    // parse a return expression
+    "return " <expr: Expression> ";" => crate::Statement::new(crate::StatementData::Return(expr)),
+};
+
+pub Expression: crate::Expression = {
+    <number: Num> => crate::Expression::new(crate::ExpressionData::Number(number)),
 };
 
 Num: u64 = <s:r"[0-9]+"> => u64::from_str(s).unwrap();

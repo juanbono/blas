@@ -8,6 +8,7 @@ fn empty_program_test() {
     let parsed_program = parser::parse_program(&db, source);
 
     // check that there was no error while parsing.
+    dbg!(&parsed_program);
     assert!(parsed_program.is_ok());
 
     // read the parsed program id text from the database.
